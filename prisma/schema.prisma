@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model Template {
+  id   String @id @default(cuid())
+  name String
+}
+
+enum Verifikasi {
+  BELUM
+  SUDAH
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Jurusan {
+  TEKNIK_INFORMATIKA
+  SISTEM_INFORMASI
+  MANAJEMEN
+  BUSINESS
+}
+
+model User {
+  id            String    @id @default(cuid())
+  namaLengkap   String
+  email         String    @unique
+  password      String
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  beasiswa      Beasiswa?
+  emailVerified DateTime?
+}
+
+model Beasiswa {
+  id                  String     @id @default(cuid())
+  nim                 String
+  ipk                 Float
+  prestasi            Int?
+  jurusan             Jurusan
+  verifikasi          Verifikasi @default(BELUM)
+  penghasilanOrangTua String
+  prestasiImages      String[]
+  transkripImage      String
+  userId              String     @unique
+  user                User       @relation(fields: [userId], references: [id])
+}
