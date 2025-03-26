@@ -86,6 +86,28 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
   {
+    accessorKey: "status",
+    header: () => <div className="text-right">Status</div>,
+    cell: ({ row }) => {
+
+      return (
+        <Badge
+          variant={
+            status === "success"
+              ? "default"
+              : status === "processing"
+                ? "outline"
+                : status === "pending"
+                  ? "secondary"
+                  : "destructive"
+          }
+        >
+          {row.getValue("status")}
+        </Badge>
+      )
+    },
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const payment = row.original

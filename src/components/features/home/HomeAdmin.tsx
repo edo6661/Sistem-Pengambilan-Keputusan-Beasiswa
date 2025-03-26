@@ -12,6 +12,7 @@ const HomeAdmin = async (
 ) => {
   const beasiswas = await getBeasiswas();
   const data = await getData()
+  console.log("user", user)
 
   return (
     <div>
