@@ -8,6 +8,7 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { ourFileRouter } from "./api/uploadthing/core";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import ThemeProvider from "@/providers/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,21 +35,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Suspense>
-          <UTSSR />
-        </Suspense>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Suspense>
+            <UTSSR />
+          </Suspense>
 
 
-        <Toaster
-          duration={2000}
-          swipeDirections={["right", "left"]}
-        />
-        <Header />
-        {children}
+          <Toaster
+            duration={2000}
+            swipeDirections={["right", "left"]}
+          />
+          <Header />
+          {children}
+        </ThemeProvider>
+
       </body>
     </html>
   );

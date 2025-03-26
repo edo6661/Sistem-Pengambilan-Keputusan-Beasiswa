@@ -18,7 +18,7 @@ interface ModalProps {
 
 }
 export default function Modal(
-  { isOpen, onChangeIsOpen, children, trigger }: ModalProps
+  { isOpen, onChangeIsOpen, children, trigger, description, title }: ModalProps
 ) {
   return (
     <Dialog
@@ -30,9 +30,11 @@ export default function Modal(
       </DialogTrigger>
       <DialogContent className="">
         <DialogHeader>
-          <DialogTitle>Share link</DialogTitle>
+          <DialogTitle>
+            {title}
+          </DialogTitle>
           <DialogDescription>
-            Anyone who has this link will be able to view this.
+            {description}
           </DialogDescription>
         </DialogHeader>
         {children}

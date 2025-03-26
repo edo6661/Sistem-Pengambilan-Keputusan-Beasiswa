@@ -3,6 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 import { Button } from './ui/button';
 import { LogOut } from 'lucide-react';
+import ToggleTheme from './shared/ToggleTheme';
 
 
 const Header = async () => {
@@ -47,6 +48,7 @@ const Header = async () => {
 
         </>
       )}
+      <ToggleTheme />
     </header>
   )
 }
