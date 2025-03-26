@@ -2,6 +2,7 @@ import { User } from '@prisma/client';
 import React, { Suspense } from 'react'
 import HomeAdmin from './HomeAdmin';
 import HomeUser from './HomeUser';
+import TemporaryLoading from '@/components/common/TemporaryLoading';
 interface HomeWrapperProps {
   user: User;
 }
@@ -9,13 +10,13 @@ const HomeWrapper = (
   { user }: HomeWrapperProps
 ) => {
   return user.role === "ADMIN" ? <Suspense
-    fallback={<div>Loading dari home admin</div>}
+    fallback={<TemporaryLoading />}
   >
     <HomeAdmin
       user={user}
     />
   </Suspense> : <Suspense
-    fallback={<div>Loading dari home user</div>}
+    fallback={<TemporaryLoading />}
   >
     <HomeUser
       user={user}

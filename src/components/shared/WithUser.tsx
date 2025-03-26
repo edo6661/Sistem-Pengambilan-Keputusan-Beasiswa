@@ -21,7 +21,7 @@ const WithUser = async ({ children, fallback }: WithUserProps) => {
   return <>
     <Suspense fallback={
       fallback || <TemporaryLoading
-        text="Loading user ..."
+        text="Temporarily Loading"
       />
     }
 

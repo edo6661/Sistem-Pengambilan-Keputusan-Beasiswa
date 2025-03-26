@@ -1,56 +1,89 @@
 import { User, Verifikasi } from '@prisma/client'
 import React from 'react'
-import { FormBeasiswa } from './FormBeasiswa';
-import { getBeasiswaByUserId } from '@/querys/beasiswa.query';
-import EditBeasiswa from './EditBeasiswa';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Info, CheckCircle2, XCircle, AlertCircle } from 'lucide-react'
+import { FormBeasiswa } from './FormBeasiswa'
+import { getBeasiswaByUserId } from '@/querys/beasiswa.query'
+
 interface HomeUserProps {
   user: User;
 }
-const HomeUser = async (
-  { user }: HomeUserProps
-) => {
+
+const HomeUser = async ({ user }: HomeUserProps) => {
   const beasiswa = await getBeasiswaByUserId(user.id)
 
+
+  const renderBeasiswaStatus = () => {
+    if (!beasiswa) {
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle>Pengajuan Beasiswa</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FormBeasiswa userId={user.id} />
+          </CardContent>
+        </Card>
+      )
+    }
+
+    switch (beasiswa.verifikasi) {
+      case Verifikasi.GAGAL:
+        return (
+          <Alert className='max-w-xl mx-auto' variant="destructive">
+            <XCircle className="h-4 w-4" />
+            <AlertTitle>Pengajuan Ditolak</AlertTitle>
+            <AlertDescription>
+              Maaf, pengajuan beasiswa Anda tidak berhasil. Silakan periksa kembali persyaratan atau ajukan ulang.
+            </AlertDescription>
+          </Alert>
+        )
+
+      case Verifikasi.DIPROSES:
+        return (
+          <Alert className='max-w-xl mx-auto' variant="default">
+            <Info className="h-4 w-4" />
+            <AlertTitle>Sedang Diproses</AlertTitle>
+            <AlertDescription>
+              Pengajuan beasiswa Anda sedang dalam proses verifikasi. Mohon menunggu informasi selanjutnya.
+            </AlertDescription>
+          </Alert>
+        )
+
+      case Verifikasi.BERHASIL:
+        return (
+          <Alert className='max-w-xl mx-auto' variant="default">
+            <CheckCircle2 className="h-4 w-4" />
+            <AlertTitle>Selamat!</AlertTitle>
+            <AlertDescription>
+              Pengajuan beasiswa Anda telah disetujui. Anda berhasil mendapatkan beasiswa.
+            </AlertDescription>
+          </Alert>
+        )
+
+      default:
+        return (
+          <Alert className='max-w-xl mx-auto' variant="default">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Status Tidak Dikenali</AlertTitle>
+            <AlertDescription>
+              Terjadi kesalahan dalam memproses status beasiswa Anda.
+            </AlertDescription>
+          </Alert>
+        )
+    }
+  }
+
   return (
-    <>
-      {beasiswa == null && (
-        <FormBeasiswa userId={user.id} />
-      )}
-      {beasiswa && (
-        <>
-          <div >
-            {beasiswa?.verifikasi === Verifikasi.GAGAL && (
-              <div>
-                <h1>
-                  Maaf anda gagal mendapatkan beasiswa
-                </h1>
-              </div>
-            )}
-            {beasiswa?.verifikasi === Verifikasi.DIPROSES && (
-              <div>
-                <h1>
-                  Maaf anda sedang dalam proses verifikasi
-                </h1>
-              </div>
-            )}
-            {beasiswa?.verifikasi === Verifikasi.BERHASIL && (
-              <div>
-                <h1>
-                  Maaf anda mendapatkan beasiswa
-                </h1>
-              </div>
-            )}
-            <EditBeasiswa
-              userId={user.id}
-              beasiswa={beasiswa}
-            />
-          </div>
-        </>
-      )}
-
-    </>
+    <div className="space-y-4">
+      {renderBeasiswaStatus()}
+      {/* <EditBeasiswa
+        userId={user.id}
+        beasiswa={beasiswa!}
+      /> */}
+    </div>
   )
-
 }
 
 export default HomeUser

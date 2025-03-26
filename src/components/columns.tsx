@@ -158,7 +158,7 @@ export const columns: ColumnDef<Beasiswa & {
     {
       accessorKey: "prestasiImages",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Prestasi Images" />
+        <DataTableColumnHeader column={column} title="Prestasi" />
       ),
       cell: ({ row }) => {
         const images = row.getValue("prestasiImages") as string[]
@@ -172,7 +172,7 @@ export const columns: ColumnDef<Beasiswa & {
     {
       accessorKey: "transkripImage",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Transkrip Image" />
+        <DataTableColumnHeader column={column} title="Transkrip" />
       ),
       cell: ({ row }) => {
         const image = row.getValue("transkripImage") as string

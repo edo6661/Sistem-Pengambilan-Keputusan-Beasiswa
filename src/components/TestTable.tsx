@@ -77,9 +77,9 @@ export function TestTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 gap-4">
         <Input
-          placeholder="Filter nims..."
+          placeholder="Filter NIM..."
           value={(table.getColumn("nim")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("nim")?.setFilterValue(event.target.value)

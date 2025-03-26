@@ -19,7 +19,8 @@ const LogoutButton = (
       variant="outline"
     >
       <LogOut />
-    </Button>)
+    </Button>
+  )
 }
 
 export default LogoutButton

@@ -1,8 +1,8 @@
 import { auth, signOut } from '@/lib/auth';
-import Link from 'next/link'
 import React from 'react'
 import ToggleTheme from './shared/ToggleTheme';
 import LogoutButton from './shared/LogoutButton';
+import AuthButton from './shared/AuthButton';
 
 
 const Header = async () => {
@@ -11,37 +11,22 @@ const Header = async () => {
 
 
   return (
-    <header className='container flex justify-between'>
-      <Link href="/">
-        Home
-      </Link>
-      {user && (
-        <>
+    <header className='container'>
+      <div className='flex justify-between py-4'>
 
-          <Link href="/dashboard/beasiswa">
-            Beasiswa
-          </Link>
+        {user && (
           <LogoutButton
             onSignOut={async () => {
               "use server"
               await signOut();
             }}
           />
-        </>
-      )}
-      {!user && (
-
-        <>
-          <Link href="/auth/register">
-            Register
-          </Link>
-          <Link href="/auth/login">
-            Login
-          </Link>
-
-        </>
-      )}
-      <ToggleTheme />
+        )}
+        {!user && (
+          <AuthButton />
+        )}
+        <ToggleTheme />
+      </div>
     </header>
   )
 }

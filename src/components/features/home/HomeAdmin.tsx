@@ -7,10 +7,11 @@ interface HomeAdminProps {
   user: User;
 }
 const HomeAdmin = async (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   { user }: HomeAdminProps
 ) => {
-  console.log("USER", user)
   const beasiswas = await getBeasiswas();
+
 
   return (
     <div>

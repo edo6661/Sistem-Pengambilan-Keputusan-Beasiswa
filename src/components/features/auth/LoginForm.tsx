@@ -49,7 +49,7 @@ export default function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-md container">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-md container space-y-4">
         <InputFieldForm
           form={form}
           name="email"
