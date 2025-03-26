@@ -14,7 +14,16 @@ export const getBeasiswaByUserId = async (userId: string) => {
 
 export const getBeasiswas = async () => {
   try {
-    return await db.beasiswa.findMany();
+    return await db.beasiswa.findMany({
+      include: {
+        user: {
+          select: {
+            namaLengkap: true,
+            id: true,
+          },
+        },
+      },
+    });
   } catch (e) {
     console.error(e);
   }

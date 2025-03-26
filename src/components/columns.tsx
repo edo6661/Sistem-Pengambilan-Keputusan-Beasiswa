@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { MoreHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -8,132 +9,228 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
 import { DataTableColumnHeader } from "./SortableHideable"
+import { HeaderTableFilterStatus } from "./HeaderTableFilterStatus"
+import { Beasiswa, Verifikasi } from "@prisma/client"
+import Image from "next/image"
+import Modal from "./shared/Modal"
+import { useState } from "react"
+import { toastSonner } from "./utils/toast_sonner"
+import { updateVerifikasi } from "@/actions/beasiswa.action"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
+import PrestasiImagesSlider from "./shared/PrestasiImagesSlider"
 
-export type Payment = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
-  month: string
-}
-
-
-export const columns: ColumnDef<Payment>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-  },
-  {
-    accessorKey: "month",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Month" />
-    ),
-    cell: ({ row }) => {
-      return <div>{row.getValue("month")}</div>
-    }
+export const columns: ColumnDef<Beasiswa & {
+  user: {
+    namaLengkap: string
+    id: string
   }
-  ,
-  {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
-
-      return <div className="text-right font-medium">{formatted}</div>
+}>[] = [
+    {
+      id: "nama",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Nama" />
+      ),
+      cell: ({ row }) => {
+        return <div>{row.original.user?.namaLengkap}</div>
+      },
     },
-  },
-  {
-    accessorKey: "status",
-    header: () => <div className="text-right">Status</div>,
-    cell: ({ row }) => {
+    {
+      accessorKey: "nim",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="NIM" />
+      ),
+      cell: ({ row }) => <div>{row.getValue("nim")}</div>,
+    },
+    {
+      accessorKey: "ipk",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="IPK" />
+      ),
+      cell: ({ row }) => <div>{row.getValue("ipk")}</div>,
+    },
+    {
+      accessorKey: "prestasi",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Prestasi" />
+      ),
+      cell: ({ row }) => <div>{row.getValue("prestasi")}</div>,
+    },
+    {
+      accessorKey: "jurusan",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Jurusan" />
+      ),
+      cell: ({ row }) => <div>{row.getValue("jurusan")}</div>,
+    },
+    {
+      accessorKey: "verifikasi",
+      header: ({ column }) => (
+        <HeaderTableFilterStatus column={column} title="Verifikasi" />
+      ),
+      cell: ({ row }) => {
+        const [isEditing, setIsEditing] = useState(false);
+        const [status, setStatus] = useState(row.getValue("verifikasi") as Verifikasi);
+        const beasiswa = row.original;
 
-      return (
-        <Badge
-          variant={
-            status === "success"
-              ? "default"
-              : status === "processing"
-                ? "outline"
-                : status === "pending"
-                  ? "secondary"
-                  : "destructive"
+        const handleUpdate = async (newStatus: Verifikasi) => {
+          setStatus(newStatus);
+          const result = await updateVerifikasi(
+            beasiswa.id,
+            newStatus
+
+          );
+          if (result.isSuccess) {
+            toastSonner({ isSuccess: true, message: "Verifikasi updated" });
+          } else {
+            toastSonner({ isSuccess: false, message: "Failed update" });
+            setStatus(row.getValue("verifikasi"));
           }
-        >
-          {row.getValue("status")}
-        </Badge>
-      )
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const payment = row.original
+          setIsEditing(false);
+        };
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+        if (isEditing) {
+          return (
+            <Select
+              onValueChange={(value) => handleUpdate(value as Verifikasi)}
+              defaultValue={status}
             >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
-  },
+              <SelectTrigger>
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={Verifikasi.DIPROSES}>
+                  {Verifikasi.DIPROSES}
+                </SelectItem>
+                <SelectItem value={Verifikasi.BERHASIL}>
+                  {Verifikasi.BERHASIL}
+                </SelectItem>
+                <SelectItem value={Verifikasi.GAGAL}>
+                  {Verifikasi.GAGAL}
+                </SelectItem>
+              </SelectContent>
 
-]
+
+
+
+            </Select>
+          );
+        }
+
+        return (
+          <div onClick={() => setIsEditing(true)} className="cursor-pointer">
+            <Badge
+              variant={
+                status === "DIPROSES"
+                  ? "warning"
+                  : status === "BERHASIL"
+                    ? "success"
+                    : "destructive"
+              }
+            >
+              {status}
+            </Badge>
+          </div>
+        );
+      },
+    }
+    ,
+    {
+      accessorKey: "penghasilanOrangTua",
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Penghasilan Orang Tua"
+        />
+      ),
+      cell: ({ row }) => {
+        const penghasilan = row.getValue("penghasilanOrangTua") as number
+        const formatted = new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(penghasilan)
+        return <div>{formatted}</div>
+      },
+    },
+    {
+      accessorKey: "prestasiImages",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Prestasi Images" />
+      ),
+      cell: ({ row }) => {
+        const images = row.getValue("prestasiImages") as string[]
+        const [isOpen, setIsOpen] = useState(false)
+        const onChangeIsOpen = (isOpen: boolean) => {
+          setIsOpen(isOpen)
+        }
+        return <PrestasiImagesSlider images={images} isOpen={isOpen} onChangeIsOpen={onChangeIsOpen} />
+      },
+    },
+    {
+      accessorKey: "transkripImage",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Transkrip Image" />
+      ),
+      cell: ({ row }) => {
+        const image = row.getValue("transkripImage") as string
+        const [isOpen, setIsOpen] = useState(false)
+        const onChangeIsOpen = (isOpen: boolean) => {
+          setIsOpen(isOpen)
+        }
+        return <div>
+          <Modal
+            isOpen={isOpen}
+            onChangeIsOpen={onChangeIsOpen}
+            trigger={
+              <Image src={image} width={100} height={100} alt="Transkrip"
+                className="rounded-md  cursor-pointer hover:opacity-80 transition-opacity"
+
+              />
+            }
+            title="Transkrip Image"
+            description="Transkrip Image description"
+          >
+            <Image src={image} width={500} height={500} alt=""
+              className="rounded-md"
+
+            />
+          </Modal>
+        </div >
+      },
+    },
+
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const beasiswa = row.original
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => {
+                  navigator.clipboard.writeText(beasiswa.id)
+                  toastSonner({
+                    isSuccess: true,
+                    message: "NIM copied",
+                  })
+                }}
+              >
+                Copy NIM
+              </DropdownMenuItem>
+              {/* <DropdownMenuSeparator /> */}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ]

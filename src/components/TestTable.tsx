@@ -76,13 +76,13 @@ export function TestTable<TData, TValue>({
   })
 
   return (
-    <div>
+    <div className="space-y-4">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter nims..."
+          value={(table.getColumn("nim")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("nim")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -120,7 +120,9 @@ export function TestTable<TData, TValue>({
 
 
       <div className="rounded-md border">
-        <Table>
+        <Table
+
+        >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -155,7 +157,7 @@ export function TestTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell colSpan={columns.length} className="text-center">
                   No results.
                 </TableCell>
               </TableRow>

@@ -3,6 +3,7 @@
 import db from "@/lib/db";
 import { BaseResult } from "@/types/base_result";
 import { beasiswaSchema } from "@/validation/beasiswa_schema";
+import { Verifikasi } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 export const upsertBeasiswa = async (
@@ -13,7 +14,9 @@ export const upsertBeasiswa = async (
   try {
     if (!isEdit) {
       const isUserAlreadyHasBeasiswa = await db.beasiswa.findUnique({
-        where: { userId },
+        where: {
+          userId,
+        },
       });
       if (isUserAlreadyHasBeasiswa) {
         return {
@@ -38,6 +41,31 @@ export const upsertBeasiswa = async (
 
     return {
       message: isEdit ? "Beasiswa updated" : "Beasiswa created",
+      isSuccess: true,
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      message: "Something went wrong",
+      isSuccess: false,
+    };
+  }
+};
+
+export const updateVerifikasi = async (
+  id: string,
+  verifikasi: Verifikasi
+): Promise<BaseResult> => {
+  try {
+    await db.beasiswa.update({
+      where: { id },
+      data: {
+        verifikasi,
+      },
+    });
+    revalidatePath("/beasiswas");
+    return {
+      message: "Verifikasi updated",
       isSuccess: true,
     };
   } catch (e) {
