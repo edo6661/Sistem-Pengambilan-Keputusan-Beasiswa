@@ -27,8 +27,9 @@ const Header = async () => {
             className='cursor-pointer'
             onClick={async () => {
               "use server"
-              await signOut()
-              redirect('/auth/login')
+              await signOut({
+              })
+              redirect("/auth/login")
             }}
             variant="outline"
           >
