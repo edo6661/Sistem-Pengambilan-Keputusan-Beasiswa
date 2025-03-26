@@ -2,7 +2,7 @@ import { User, Verifikasi } from '@prisma/client'
 import React from 'react'
 import { FormBeasiswa } from './FormBeasiswa';
 import { getBeasiswaByUserId } from '@/querys/beasiswa.query';
-import { Button } from '@/components/ui/button';
+import EditBeasiswa from './EditBeasiswa';
 interface HomeUserProps {
   user: User;
 }
@@ -40,9 +40,10 @@ const HomeUser = async (
                 </h1>
               </div>
             )}
-            <Button>
-              Edit Data
-            </Button>
+            <EditBeasiswa
+              userId={user.id}
+              beasiswa={beasiswa}
+            />
           </div>
         </>
       )}

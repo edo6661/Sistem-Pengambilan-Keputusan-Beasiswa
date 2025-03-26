@@ -18,7 +18,7 @@ const ImagesInputs = ({ watch, setValue }: ImagesInputsProps) => {
       <div>
         {watch("transkripImage") && (
           <div className="flex justify-center gap-4">
-            <Image src={watch("transkripImage")!} width={300} height={300} alt="Preview" />
+            <Image src={watch("transkripImage")!} width={200} height={200} alt="Preview" />
             <Button
               onClick={() => setValue("transkripImage", "")}
             >
