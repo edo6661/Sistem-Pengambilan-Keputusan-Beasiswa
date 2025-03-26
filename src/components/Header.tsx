@@ -4,6 +4,7 @@ import React from 'react'
 import { Button } from './ui/button';
 import { LogOut } from 'lucide-react';
 import ToggleTheme from './shared/ToggleTheme';
+import { redirect } from 'next/navigation';
 
 
 const Header = async () => {
@@ -26,9 +27,8 @@ const Header = async () => {
             className='cursor-pointer'
             onClick={async () => {
               "use server"
-              await signOut({
-                redirectTo: "/auth/login",
-              })
+              await signOut()
+              redirect('/auth/login')
             }}
             variant="outline"
           >
