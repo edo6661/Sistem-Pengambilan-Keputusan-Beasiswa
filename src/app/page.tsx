@@ -1,9 +1,15 @@
-import { Button } from "@/components/ui/button";
+import HomeWrapper from "@/components/features/home/HomeWrapper";
+import WithUser from "@/components/shared/WithUser";
 
 export default function Home() {
+
   return (
-    <Button>
-      TEst
-    </Button>
+    <div className="container">
+      <WithUser>
+        {(user) => (
+          <HomeWrapper user={user} />
+        )}
+      </WithUser>
+    </div>
   );
 }

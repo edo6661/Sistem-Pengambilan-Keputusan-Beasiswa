@@ -19,8 +19,9 @@ model Template {
 }
 
 enum Verifikasi {
-  BELUM
-  SUDAH
+  DIPROSES
+  GAGAL
+  BERHASIL
 }
 
 enum Role {
@@ -54,8 +55,8 @@ model Beasiswa {
   ipk                 Float
   prestasi            Int?
   jurusan             Jurusan
-  verifikasi          Verifikasi @default(BELUM)
-  penghasilanOrangTua String
+  verifikasi          Verifikasi @default(DIPROSES)
+  penghasilanOrangTua Float
   prestasiImages      String[]
   transkripImage      String
   userId              String     @unique

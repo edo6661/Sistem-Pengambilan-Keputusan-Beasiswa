@@ -22,6 +22,7 @@ const Header = async () => {
             Beasiswa
           </Link>
           <Button
+            className='cursor-pointer'
             onClick={async () => {
               "use server"
               await signOut({

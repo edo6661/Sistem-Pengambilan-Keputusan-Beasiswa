@@ -1,35 +1,51 @@
 "use server";
 
 import db from "@/lib/db";
+import { BaseResult } from "@/types/base_result";
 import { beasiswaSchema } from "@/validation/beasiswa_schema";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-
-export const createBeasiswa = async (data: z.infer<typeof beasiswaSchema>) => {
+export const upsertBeasiswa = async (
+  data: z.infer<typeof beasiswaSchema>,
+  { isEdit = false },
+  userId: string
+): Promise<BaseResult> => {
   try {
-    await db.beasiswa.create({
-      data: {
+    if (!isEdit) {
+      const isUserAlreadyHasBeasiswa = await db.beasiswa.findUnique({
+        where: { userId },
+      });
+      if (isUserAlreadyHasBeasiswa) {
+        return {
+          message: "User already has beasiswa",
+          isSuccess: false,
+        };
+      }
+    }
+
+    await db.beasiswa.upsert({
+      where: { userId },
+      create: {
         ...data,
-        userId: "1",
+        userId,
+      },
+      update: {
+        ...data,
       },
     });
-    revalidatePath("/beasiswas");
-  } catch (e) {
-    console.error(e);
-  }
-};
 
-export const updateBeasiswa = async (data: z.infer<typeof beasiswaSchema>) => {
-  try {
-    await db.beasiswa.update({
-      where: { id: data.id },
-      data: {
-        ...data,
-      },
-    });
-    revalidatePath("/beasiswas");
+    revalidatePath("/");
+
+    return {
+      message: isEdit ? "Beasiswa updated" : "Beasiswa created",
+      isSuccess: true,
+    };
   } catch (e) {
     console.error(e);
+    return {
+      message: "Something went wrong",
+      isSuccess: false,
+    };
   }
 };
 

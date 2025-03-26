@@ -41,6 +41,7 @@ export const config = {
     "/(id|en)/:path*",
 
     "/((?!_next|_vercel|.*\\..*).*)",
+    "/api/uploadthing",
   ],
   unstable_allowDynamic: [
     "/node_modules/@prisma/client/runtime/library.js",

@@ -35,6 +35,7 @@ const InputFieldForm = <T extends FieldValues>({
               <Input
                 placeholder={placeholder}
                 {...field}
+
                 type={isShowPassword ? 'text' : type}
               />
               {type === 'password' && (

@@ -13,11 +13,14 @@ import { registerSchema } from "@/validation/auth_schema"
 import { register } from "@/actions/auth_action"
 import InputFieldForm from "@/components/shared/InputFieldForm"
 import { toastSonner } from "@/components/utils/toast_sonner"
+import { useRouter } from "next/navigation"
 
 
 export default function RegisterForm() {
   const [isPending, startTransition] = useTransition()
   const [isShowPassword, setIsShowPassword] = useState(false)
+  const router = useRouter();
+
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false)
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -32,13 +35,19 @@ export default function RegisterForm() {
   async function onSubmit(data: z.infer<typeof registerSchema>) {
     startTransition(async () => {
       const res = await register(data)
-      console.log(res)
       toastSonner(
         {
           message: res.message,
           isSuccess: res.isSuccess,
         }
       )
+      if (res.isSuccess) {
+        router.replace('/auth/login');
+        router.refresh();
+
+      }
+
+
     })
   }
 

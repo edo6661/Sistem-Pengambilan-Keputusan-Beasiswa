@@ -17,6 +17,7 @@ const WithUser = async ({ children, fallback }: WithUserProps) => {
     return redirect('/auth/login');
   }
 
+
   return <>
     <Suspense fallback={
       fallback || <TemporaryLoading
