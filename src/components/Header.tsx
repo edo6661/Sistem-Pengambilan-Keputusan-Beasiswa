@@ -1,10 +1,8 @@
 import { auth, signOut } from '@/lib/auth';
 import Link from 'next/link'
 import React from 'react'
-import { Button } from './ui/button';
-import { LogOut } from 'lucide-react';
 import ToggleTheme from './shared/ToggleTheme';
-import { redirect } from 'next/navigation';
+import LogoutButton from './shared/LogoutButton';
 
 
 const Header = async () => {
@@ -23,18 +21,12 @@ const Header = async () => {
           <Link href="/dashboard/beasiswa">
             Beasiswa
           </Link>
-          <Button
-            className='cursor-pointer'
-            onClick={async () => {
+          <LogoutButton
+            onSignOut={async () => {
               "use server"
-              await signOut({
-              })
-              redirect("/auth/login")
+              await signOut();
             }}
-            variant="outline"
-          >
-            <LogOut />
-          </Button>
+          />
         </>
       )}
       {!user && (
