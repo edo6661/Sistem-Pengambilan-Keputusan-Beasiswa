@@ -81,10 +81,10 @@ export function TestTable<TData, TValue>({
     },
   })
 
-  // Fungsi untuk handle export PDF
+
   const handleExportPDF = (filter: 'all' | 'lulus' | 'tidak_lulus' | 'diproses' = 'all') => {
     try {
-      // Cast data ke tipe yang sesuai
+
       const beasiswaData = data as unknown as BeasiswaData[];
       exportFilteredToPDF(beasiswaData, filter);
     } catch (error) {
@@ -93,7 +93,7 @@ export function TestTable<TData, TValue>({
     }
   }
 
-  // Fungsi untuk export data yang sedang ditampilkan (filtered)
+
   const handleExportCurrentView = () => {
     try {
       const currentData = table.getFilteredRowModel().rows.map(row => row.original);

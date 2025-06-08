@@ -28,6 +28,7 @@ export function FormBeasiswa({ userId, beasiswa, onSuccess }: FormBeasiswaProps)
     defaultValues: {
       nim: beasiswa?.nim || "",
       ipk: beasiswa?.ipk || 0,
+      semester: beasiswa?.semester || 0,
       prestasi: beasiswa?.prestasi || 0,
       jurusan: beasiswa?.jurusan || Jurusan.TEKNIK_INFORMATIKA,
       verifikasi: beasiswa?.verifikasi || Verifikasi.DIPROSES,
@@ -97,6 +98,13 @@ export function FormBeasiswa({ userId, beasiswa, onSuccess }: FormBeasiswaProps)
                 name="ipk"
                 label="IPK"
                 placeholder="Masukkan IPK Anda"
+                type="number"
+              />
+              <InputFieldForm
+                form={form}
+                name="semester"
+                label="Semester"
+                placeholder="Masukkan Semester Anda"
                 type="number"
               />
               <InputFieldForm

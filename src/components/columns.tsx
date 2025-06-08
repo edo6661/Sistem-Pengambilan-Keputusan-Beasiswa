@@ -53,6 +53,13 @@ export const columns: ColumnDef<Beasiswa & {
       cell: ({ row }) => <div>{row.getValue("ipk")}</div>,
     },
     {
+      accessorKey: "semester",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="SEMESTER" />
+      ),
+      cell: ({ row }) => <div>{row.getValue("semester")}</div>,
+    },
+    {
       accessorKey: "prestasi",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Prestasi" />

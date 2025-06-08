@@ -16,6 +16,16 @@ export const beasiswaSchema = z.object({
       .min(0, { message: "IPK minimal 0" })
       .max(4, { message: "IPK maksimal 4" })
   ),
+  semester: z.preprocess(
+    (val) => Number(val),
+    z
+      .number({
+        invalid_type_error: "Semester harus berupa angka",
+        required_error: "Semester wajib diisi",
+      })
+      .min(0, { message: "Semester minimal 1" })
+      .max(4, { message: "Semester maksimal 8" })
+  ),
   penghasilanOrangTua: z.preprocess(
     (val) => Number(val),
     z
@@ -23,7 +33,7 @@ export const beasiswaSchema = z.object({
         invalid_type_error: "Penghasilan orang tua harus berupa angka",
         required_error: "Penghasilan orang tua wajib diisi",
       })
-      .min(0, { message: "Penghasilan orang tua tidak boleh negatif" })
+      .min(1000000, { message: "Penghasilan orang tua tidak boleh negatif" })
   ),
   prestasi: z.preprocess(
     (val) => (val === "" ? null : Number(val)),

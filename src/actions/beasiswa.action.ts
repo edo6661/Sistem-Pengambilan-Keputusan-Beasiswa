@@ -2,6 +2,7 @@
 
 import db from "@/lib/db";
 import { BaseResult } from "@/types/base_result";
+import { calculateVerifikasi } from "@/utils/calculateVerifikasi";
 import { beasiswaSchema } from "@/validation/beasiswa_schema";
 import { Verifikasi } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -30,6 +31,11 @@ export const upsertBeasiswa = async (
       where: { userId },
       create: {
         ...data,
+        verifikasi: calculateVerifikasi(
+          data.ipk,
+          data.prestasi,
+          data.penghasilanOrangTua
+        ),
         userId,
       },
       update: {
