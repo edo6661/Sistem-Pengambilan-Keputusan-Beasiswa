@@ -132,3 +132,103 @@ export const exportFilteredToPDF = (
 
   exportToPDF(filteredData, title);
 };
+
+export const exportToPDFSingle = (beasiswa: {
+  nim: string;
+  ipk: number;
+  semester: number;
+  prestasi: number;
+  jurusan: string;
+  verifikasi: string;
+  penghasilanOrangTua: number;
+  prestasiImages: string[];
+  transkripImage: string;
+  user: { namaLengkap: string };
+}) => {
+  const doc = new jsPDF();
+
+  const currentDate = new Date().toLocaleDateString("id-ID", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  doc.setFont("helvetica");
+  doc.setFontSize(18);
+  doc.setTextColor(40);
+  doc.text("Bukti Pengajuan Beasiswa", 14, 20);
+
+  doc.setFontSize(11);
+  doc.setTextColor(100);
+  doc.text(`Tanggal Cetak: ${currentDate}`, 14, 30);
+
+  let y = 40;
+
+  const detailData = [
+    ["Nama", beasiswa.user.namaLengkap],
+    ["NIM", beasiswa.nim],
+    ["Jurusan", beasiswa.jurusan],
+    ["Semester", beasiswa.semester.toString()],
+    ["IPK", beasiswa.ipk.toString()],
+    ["Prestasi", beasiswa.prestasi.toString()],
+    [
+      "Penghasilan Orang Tua",
+      `Rp ${beasiswa.penghasilanOrangTua.toLocaleString("id-ID")}`,
+    ],
+    [
+      "Status Verifikasi",
+      beasiswa.verifikasi === "BERHASIL"
+        ? "Lulus"
+        : beasiswa.verifikasi === "GAGAL"
+        ? "Tidak Lulus"
+        : "Diproses",
+    ],
+  ];
+
+  detailData.forEach(([label, value]) => {
+    doc.setFont("helvetica", "bold");
+    doc.text(`${label}:`, 14, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(value, 60, y);
+    y += 10;
+  });
+
+  const addImage = async (url: string, yPos: number, label: string) => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const reader = new FileReader();
+
+      return new Promise<void>((resolve) => {
+        reader.onloadend = () => {
+          const base64data = reader.result as string;
+          doc.setFont("helvetica", "bold");
+          doc.text(label, 14, yPos);
+          doc.addImage(base64data, "JPEG", 14, yPos + 5, 80, 60);
+          resolve();
+        };
+        reader.readAsDataURL(blob);
+      });
+    } catch (err) {
+      console.error(`Gagal memuat gambar ${label}`, err);
+    }
+  };
+
+  const promises: Promise<void>[] = [];
+
+  if (beasiswa.transkripImage) {
+    promises.push(addImage(beasiswa.transkripImage, y + 10, "Transkrip Nilai"));
+    y += 75;
+  }
+
+  if (beasiswa.prestasiImages?.length > 0) {
+    beasiswa.prestasiImages.forEach((img, i) => {
+      promises.push(addImage(img, y + 10 + i * 75, `Prestasi #${i + 1}`));
+    });
+  }
+
+  Promise.all(promises).then(() => {
+    const fileName = `bukti_pengajuan_beasiswa_${beasiswa.nim}.pdf`;
+    doc.save(fileName);
+  });
+};

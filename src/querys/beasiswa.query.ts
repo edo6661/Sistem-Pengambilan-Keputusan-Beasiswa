@@ -6,6 +6,14 @@ export const getBeasiswaByUserId = async (userId: string) => {
       where: {
         userId,
       },
+      include: {
+        user: {
+          select: {
+            namaLengkap: true,
+            id: true,
+          },
+        },
+      },
     });
   } catch (e) {
     console.error(e);

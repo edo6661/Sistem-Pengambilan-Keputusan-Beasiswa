@@ -5,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Info, CheckCircle2, XCircle, AlertCircle } from 'lucide-react'
 import { FormBeasiswa } from './FormBeasiswa'
 import { getBeasiswaByUserId } from '@/querys/beasiswa.query'
+import { ExportPdfSuccess } from './ExportPdfSuccess'
 
 interface HomeUserProps {
   user: User;
@@ -33,9 +34,9 @@ const HomeUser = async ({ user }: HomeUserProps) => {
         return (
           <Alert className='max-w-xl mx-auto' variant="destructive">
             <XCircle className="h-4 w-4" />
-            <AlertTitle>Pengajuan Ditolak</AlertTitle>
+            <AlertTitle>Pengajuan Gagal</AlertTitle>
             <AlertDescription>
-              Maaf, pengajuan beasiswa Anda tidak berhasil. Silakan periksa kembali persyaratan atau ajukan ulang.
+              Maaf, pengajuan beasiswa Anda gagal.
             </AlertDescription>
           </Alert>
         )
@@ -53,13 +54,18 @@ const HomeUser = async ({ user }: HomeUserProps) => {
 
       case Verifikasi.BERHASIL:
         return (
-          <Alert className='max-w-xl mx-auto' variant="default">
-            <CheckCircle2 className="h-4 w-4" />
-            <AlertTitle>Selamat!</AlertTitle>
-            <AlertDescription>
-              Pengajuan beasiswa Anda telah disetujui. Anda berhasil mendapatkan beasiswa.
-            </AlertDescription>
-          </Alert>
+          <div className='flex flex-col gap-8 items-center'>
+            <Alert className='max-w-xl mx-auto' variant="default">
+              <CheckCircle2 className="h-4 w-4" />
+              <AlertTitle>Selamat!</AlertTitle>
+              <AlertDescription>
+                Pengajuan beasiswa Anda telah disetujui. Anda berhasil mendapatkan beasiswa.
+              </AlertDescription>
+            </Alert>
+            <ExportPdfSuccess
+              beasiswa={beasiswa}
+            />
+          </div>
         )
 
       default:
