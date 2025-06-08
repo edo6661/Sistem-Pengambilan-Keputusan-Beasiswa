@@ -112,10 +112,6 @@ export const columns: ColumnDef<Beasiswa & {
                   {Verifikasi.GAGAL}
                 </SelectItem>
               </SelectContent>
-
-
-
-
             </Select>
           );
         }
@@ -166,7 +162,9 @@ export const columns: ColumnDef<Beasiswa & {
         const onChangeIsOpen = (isOpen: boolean) => {
           setIsOpen(isOpen)
         }
-        return <PrestasiImagesSlider images={images} isOpen={isOpen} onChangeIsOpen={onChangeIsOpen} />
+        return (images.length > 0 && images[0]) && (
+          <PrestasiImagesSlider images={images} isOpen={isOpen} onChangeIsOpen={onChangeIsOpen} />
+        )
       },
     },
     {
@@ -180,25 +178,27 @@ export const columns: ColumnDef<Beasiswa & {
         const onChangeIsOpen = (isOpen: boolean) => {
           setIsOpen(isOpen)
         }
-        return <div>
-          <Modal
-            isOpen={isOpen}
-            onChangeIsOpen={onChangeIsOpen}
-            trigger={
-              <Image src={image} width={100} height={100} alt="Transkrip"
-                className="rounded-md  cursor-pointer hover:opacity-80 transition-opacity"
+        return image && (
+          <div>
+            <Modal
+              isOpen={isOpen}
+              onChangeIsOpen={onChangeIsOpen}
+              trigger={
+                <Image src={image} width={100} height={100} alt="Transkrip"
+                  className="rounded-md cursor-pointer hover:opacity-80 transition-opacity aspect-video object-cover"
+
+                />
+              }
+              title="Transkrip Image"
+              description="Transkrip Image description"
+            >
+              <Image src={image} width={500} height={500} alt=""
+                className="rounded-md"
 
               />
-            }
-            title="Transkrip Image"
-            description="Transkrip Image description"
-          >
-            <Image src={image} width={500} height={500} alt=""
-              className="rounded-md"
-
-            />
-          </Modal>
-        </div >
+            </Modal>
+          </div >
+        )
       },
     },
 

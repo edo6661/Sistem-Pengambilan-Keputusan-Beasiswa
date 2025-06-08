@@ -30,7 +30,7 @@ const PrestasiImagesSlider = ({ images, isOpen, onChangeIsOpen }: PrestasiImages
           width={100}
           height={100}
           alt="Thumbnail"
-          className="rounded-md cursor-pointer hover:opacity-80 transition-opacity"
+          className="rounded-md cursor-pointer hover:opacity-80 transition-opacity aspect-video object-cover"
         />
       }
       title="Prestasi Images"

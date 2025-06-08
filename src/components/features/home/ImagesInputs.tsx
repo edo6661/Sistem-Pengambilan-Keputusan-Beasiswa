@@ -14,7 +14,7 @@ interface ImagesInputsProps {
 }
 const ImagesInputs = ({ watch, setValue }: ImagesInputsProps) => {
   return (
-    <div className="flex justify-between items-center gap-8 flex-wrap mx-auto">
+    <div className="flex justify-around items-center gap-8 flex-wrap mx-auto">
       <div>
         {watch("transkripImage") && (
           <div className="flex justify-center gap-4">
