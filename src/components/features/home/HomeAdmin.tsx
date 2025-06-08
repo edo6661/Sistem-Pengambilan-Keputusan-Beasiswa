@@ -13,6 +13,7 @@ const HomeAdmin = async (
   const beasiswas = await getBeasiswas();
 
 
+
   return (
     <div>
 
