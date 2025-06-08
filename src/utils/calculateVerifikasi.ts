@@ -24,8 +24,6 @@ export const calculateVerifikasi = (
 
   if (skorTotal >= 0.7) {
     return Verifikasi.BERHASIL;
-  } else if (skorTotal >= 0.5) {
-    return Verifikasi.DIPROSES;
   } else {
     return Verifikasi.GAGAL;
   }
